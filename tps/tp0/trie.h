@@ -5,7 +5,9 @@ typedef struct verticeTrie
 {
 	struct verticeTrie *pai;
 	struct verticeTrie *filhos[26];
-	bool end_of_word;
+	int end_of_word = 0;
 } vertice;
 
 void adicionaPalavra(char *palavra);
+vertice novoVertice(void);
+int search(char *palavra);
