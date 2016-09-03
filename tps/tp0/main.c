@@ -6,7 +6,7 @@ typedef struct verticeTrie
 {
 	struct verticeTrie *filhos[26];
 	int end_of_word;
-	int numTexto;
+	int numOcorrencias;
 } vertice;
 
 vertice* novoVertice (void)
@@ -14,11 +14,7 @@ vertice* novoVertice (void)
 	vertice* novo;
 	novo = malloc(sizeof(vertice));
 	novo->end_of_word = 0;
-	novo->numTexto = 0;
-	/*for (int i=0; i<26; i++)
-	{
-		novo->filhos[i] = NULL;
-	}*/
+	novo->numOcorrencias = 0;
 	return novo;
 }
 
@@ -40,6 +36,7 @@ void inserePalavra(char *palavra, vertice *root)
 				vertice *vert2;
 				vert2 = novoVertice();
 				vert->filhos[indice] = vert2;
+				vert = vert2;
 			}
 		}
 		else
@@ -49,7 +46,7 @@ void inserePalavra(char *palavra, vertice *root)
 	}
 }
 
-int search (char *palavra, vertice *root)
+int procuraPalavra (char *palavra, vertice *root)
 {
 	vertice* vert = root;
 	int i, m = strlen(palavra);
@@ -69,7 +66,15 @@ int search (char *palavra, vertice *root)
 		}
 		else
 		{
-			return (vert->end_of_word);
+			if (vert->end_of_word == 1)
+			{
+				vert->numOcorrencias++;
+				return vert->numOcorrencias;
+			}
+			else
+			{
+				return vert->end_of_word;
+			}
 		}
 	}
 }
@@ -77,8 +82,13 @@ int search (char *palavra, vertice *root)
 int main (int argc, char *argv[])
 {
 	vertice *root = novoVertice();
-	inserePalavra("palavra",root);
-	int a = search("palavra",root);
+	char* palavra = "palavra";
+	inserePalavra(palavra,root);
+	inserePalavra("palavraas",root);
+	int a = procuraPalavra("palavraas",root);
+	a = procuraPalavra("palavraas",root);
+	a = procuraPalavra("palavraas",root);
+	a = procuraPalavra("palavraas",root);
 	printf("%d\n",a);
 	return 0;
 }
