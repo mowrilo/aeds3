@@ -2,7 +2,7 @@ typedef struct verticeTrie
 {
 	struct verticeTrie *filhos[26];
 	struct verticeTrie *pai;
-	int end_of_word;
+	int fimDePalavra;
 	int numOcorrencias;
 	int indicePai;
 } vertice;

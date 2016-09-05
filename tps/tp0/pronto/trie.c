@@ -8,7 +8,7 @@ vertice* novoVertice (void)
 	int i;
 	vertice* novo;
 	novo = malloc(sizeof(vertice));
-	novo->end_of_word = 0;
+	novo->fimDePalavra = 0;
 	novo->numOcorrencias = 0;
 	novo->indicePai = 100;
 	novo->pai = NULL;
@@ -44,7 +44,7 @@ void inserePalavra(char *palavra, vertice *root)
 		}
 		else
 		{
-			vert->end_of_word = 1;
+			vert->fimDePalavra = 1;
 		}
 	}
 }
@@ -64,16 +64,23 @@ int procuraPalavra (char *palavra, vertice *root, int add)
 			}
 			else
 			{
-				return 0;
+				return -1;
 			}
 		}
 		else
 		{
-			if (add == 1)
+			if (vert->fimDePalavra == 1)
 			{
-				vert->numOcorrencias++;
+				if (add == 1)
+				{
+					vert->numOcorrencias++;
+				}
+				return vert->numOcorrencias;
 			}
-			return vert->numOcorrencias;
+			else 
+			{
+				return -1;
+			}
 		}
 	}
 }
