@@ -217,29 +217,37 @@ int buscaEstante (FILE** indice, char* nomeProcura)
 	return -1;
 }
 
-char buscaLivro (FILE** estante, char* nomeProcura, livro* aux, int lsup, int linf)
+int buscaLivro (FILE** estante, char* nomeProcura, int lsup, int linf)
 {
-	aux = NULL;
-	int med = linf + (lsup - linf)/2;
-	fseek(*estante, med*sizeof(livro), SEEK_SET);
-	fread(aux, sizeof(livro), 1, *estante);
-	printf("%d\n", med);
-	int compara = strcmp(nomeProcura, aux->nome);
-	if (compara == 0)
+	livro aux;
+	while (lsup >= linf)
 	{
-		printf("achou!!");
-		return (aux->estado);
+		int med = linf + (lsup - linf)/2;
+		fseek(*estante, med*sizeof(livro), SEEK_SET);
+		fread(&aux, sizeof(livro), 1, *estante);
+		//printf("%d\n", med);
+		int compara = strcmp(nomeProcura, aux.nome);
+		if (compara == 0)
+		{
+			if (aux.estado == '0')
+			{
+				return (-1);
+			}
+			else
+			{
+				return med;
+			}
+		}
+		else if (compara > 0)
+		{
+			linf = med+1;	
+		}
+		else
+		{
+			lsup = med-1;
+		}
 	}
-	else if (compara > 0)
-	{
-		aux = NULL;
-		linf = med+1;	
-	}
-	else
-	{
-		aux = NULL;
-		lsup = med-1;
-	}
+	return (-2);
 }
 
 int main()
@@ -348,32 +356,44 @@ int main()
 	{
 		rewind(est[i]);
 	}
-
-	int t = buscaEstante(&indice, "o_universo_numa_casca_de_noz");
-	printf("%d\n", t);
-
-	int estCheias = n/l;
-	int nLivros;
-	if (t < estCheias)
+	char* query = malloc(sizeof(char)*51);
+	for (int i=0; i<k; i++)
 	{
-		nLivros = l;
-	}
-	else
-	{
-		nLivros = n%l;
-	}
+		scanf("%s",query);
+		int local = buscaEstante(&indice, query);
+		
+		if (local < 0)
+		{
+			printf("livro nao encontrado\n");
+		}
+		else
+		{
+			int estCheias = n/l;
+			int nLivros;
+			if (local < estCheias)
+			{
+				nLivros = l;
+			}
+			else
+			{
+				nLivros = n%l;
+			}
 
-	livro* aux = malloc(sizeof(livro));
-	char c = buscaLivro(&est[t], "o_universo_numa_casca_de_noz", aux, (nLivros-1), 0);
-
-	if (aux != NULL)
-	{
-		char mander = aux->estado;
-		printf("%c\n",mander);
-	}
-	else
-	{
-		printf("NULL!!!\n");
+			int c = buscaLivro(&est[local], query, (nLivros-1), 0);
+		
+			if (c == -1)
+			{
+				printf("emprestado\n");
+			}
+			else if (c == -2)
+			{
+				printf("livro nao encontrado\n");
+			}
+			else
+			{
+				printf("disponivel na posicao %d da estante %d\n", c, local);
+			}
+		}
 	}
 	//fread(&livro1, sizeof(livro), 1, est);
 	/*fread(&livro1, sizeof(livro), 1, est[1]);
